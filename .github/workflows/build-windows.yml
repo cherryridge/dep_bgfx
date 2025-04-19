@@ -1,0 +1,78 @@
+﻿name: Build on Windows
+
+on:
+    workflow_call:
+        inputs:
+            commit-sha:
+                type: string
+                required: true
+        outputs:
+            runid:
+                value: ${{github.run_id}}
+    workflow_dispatch:
+        inputs:
+            commit-sha:
+                type: string
+                required: true
+
+jobs:
+    x64:
+        runs-on: windows-latest
+        steps:
+
+          - name: Checkout BGFX
+            uses: actions/checkout@v4
+            with:
+                repository: bkaradzic/bgfx
+                path: bgfx
+        
+          - name: Checkout BX
+            uses: actions/checkout@v4
+            with:
+                repository: bkaradzic/bx
+                path: bx
+
+          - name: Checkout BIMG
+            uses: actions/checkout@v4
+            with:
+                repository: bkaradzic/bimg
+                path: bimg
+
+          - name: Install ARM64 Windows SDK
+            uses: ChristopheLav/windows-sdk-install@v1
+            with:
+                version-sdk: 26100
+                features: "OptionId.DesktopCPParm64"
+
+          - name: Build Windows x64
+            shell: pwsh
+            run: |
+                cd bgfx
+                ..\bx\tools\bin\windows\genie.exe --platform=x64 vs2022
+                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Debug /p:Platform=x64
+                ..\bx\tools\bin\windows\genie.exe --with-tools --platform=x64 vs2022
+                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Release /p:Platform=x64
+
+          - name: Build Windows arm64
+            shell: pwsh
+            run: |
+                cd bgfx
+                del -r .build\projects
+                ..\bx\tools\bin\windows\genie.exe --platform=ARM64 vs2022
+                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Debug /p:Platform=ARM64
+                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Release /p:Platform=ARM64
+                ..\bx\tools\bin\windows\genie.exe --with-tools --platform=ARM vs2022
+                msbuild ".build/projects/vs2022/shaderc.vcxproj" /m /p:Configuration=Release /p:Platform=ARM
+
+          - name: Compress Product
+            shell: pwsh
+            run: |
+                echo ${{inputs.commit-sha}} >> VERSION.txt
+                mkdir temp\include
+                cp -r bgfx\include\* temp\include
+                cp -r bx\include\* temp\include
+                cp -r bimg\include\* temp\include
+                7z a bgfx_windows_x64_debug.7z .\bgfx\.build\win64_vs2022\bin\bgfxDebug.lib .\bgfx\.build\win64_vs2022\bin\bgfxDebug.pdb .\bgfx\.build\win64_vs2022\bin\bxDebug.lib .\bgfx\.build\win64_vs2022\bin\bxDebug.pdb .\bgfx\.build\win64_vs2022\bin\bimgDebug.lib .\bgfx\.build\win64_vs2022\bin\bimgDebug.pdb .\temp\include VERSION.txt
+                7z a bgfx_windows_x64_release.7z .\bgfx\.build\win64_vs2022\bin\bgfxRelease.lib .\bgfx\.build\win64_vs2022\bin\bgfxRelease.pdb .\bgfx\.build\win64_vs2022\bin\bxRelease.lib .\bgfx\.build\win64_vs2022\bin\bxRelease.pdb .\bgfx\.build\win64_vs2022\bin\bimgRelease.lib .\bgfx\.build\win64_vs2022\bin\bimgRelease.pdb .\bgfx\.build\win64_vs2022\bin\shadercRelease.exe .\temp\include VERSION.txt
+                7z a bgfx_windows_arm64_debug.7z .\bgfx\scripts\bgfxDebug.lib .\bgfx\scripts\bgfxDebug.pdb .\bimg\scripts\bimgDebug.lib .\bimg\scripts\bimgDebug.pdb .\bx\scripts\bxDebug.lib .\bx\scripts\bxDebug.pdb .\temp\include VERSION.txt
+                7z a bgfx_windows_arm64_release.7z .\bgfx\scripts\bgfxRelease.lib .\bgfx\scripts\bgfxRelease.pdb .\bimg\scripts\bimgRelease.lib .\bimg\scripts\bimgRelease.pdb .\bx\scripts\bxRelease.lib .\bx\scripts\bxRelease.pdb .\bgfx\scripts\shadercRelease.exe .\temp\include VERSION.txt

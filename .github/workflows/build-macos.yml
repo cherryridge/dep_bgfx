@@ -1,0 +1,39 @@
+﻿name: Build on MacOS
+
+on:
+    workflow_call:
+        inputs:
+            commit-sha:
+                type: string
+                required: true
+        outputs:
+            runid:
+                value: ${{github.run_id}}
+    workflow_dispatch:
+        inputs:
+            commit-sha:
+                type: string
+                required: true
+
+jobs:
+    x64:
+        runs-on: macos-latest
+        steps:
+
+          - name: Checkout BGFX
+            uses: actions/checkout@v4
+            with:
+                repository: bkaradzic/bgfx
+                path: bgfx
+        
+          - name: Checkout BX
+            uses: actions/checkout@v4
+            with:
+                repository: bkaradzic/bx
+                path: bx
+
+          - name: Checkout BIMG
+            uses: actions/checkout@v4
+            with:
+                repository: bkaradzic/bimg
+                path: bimg

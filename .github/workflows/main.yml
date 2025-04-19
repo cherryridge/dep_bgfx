@@ -1,0 +1,127 @@
+﻿name: Main Task
+
+on:
+    schedule:
+        - cron: "20 11 */5 * *"
+    workflow_dispatch:
+
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        outputs:
+            update: ${{steps.should_update.outputs.update}}
+            latest_commit: ${{steps.should_update.outputs.latest_commit}}
+        steps:
+
+          - name: Checkout This Repo
+            uses: actions/checkout@v4
+            with:
+                ref: main
+
+          - name: Get Last Built Commit
+            id: current_commit
+            uses: juliangruber/read-file-action@v1
+            with:
+                path: ./CURRENT_COMMIT
+
+          - name: Determine Should Update
+            id: should_update
+            run: |
+                current_commit="${{steps.current_commit.outputs.content}}"
+                current_commit="${current_commit%"${current_commit##*[![:space:]]}"}"
+
+                latest_commit=$(curl -s "https://api.github.com/repos/bkaradzic/bgfx/commits/master" | jq -r '.sha')
+                echo "latest_commit=$latest_commit" >> $GITHUB_OUTPUT
+                
+                echo "Built commit: $current_commit"
+                echo "Latest commit: $latest_commit"
+
+                if [ "$current_commit" = "$latest_commit" ]; then
+                    echo "update=false" >> $GITHUB_OUTPUT
+                    echo "Build skipped."
+                else
+                    echo "update=true" >> $GITHUB_OUTPUT
+                    echo "Starting build process."
+                fi
+
+    build-windows:
+        needs: check
+        if: needs.check.outputs.update == 'true'
+        uses: ./.github/workflows/build-windows.yml
+        with:
+            commit-sha: ${{needs.check.outputs.latest_commit}}
+
+    build-linux:
+        needs: check
+        if: needs.check.outputs.update == 'true'
+        uses: ./.github/workflows/build-linux.yml
+        with:
+            commit-sha: ${{needs.check.outputs.latest_commit}}
+
+    build-macos:
+        needs: check
+        if: needs.check.outputs.update == 'true'
+        uses: ./.github/workflows/build-macos.yml
+        with:
+            commit-sha: ${{needs.check.outputs.latest_commit}}
+
+    update-commit:
+        runs-on: ubuntu-latest
+        needs: [check, build-linux, build-macos, build-windows]
+        permissions:
+            contents: write
+        env:
+            LATEST_COMMIT: ${{needs.check.outputs.latest_commit}}
+        outputs:
+            updated_commit: ${{steps.commit.outputs.commit}}
+        steps:
+
+          - name: Checkout This Repo
+            uses: actions/checkout@v4
+            with:
+                ref: main
+
+          - name: Configure Git
+            run: |
+                git config --global user.name "${{github.actor}}"
+                git config --global user.email "${{github.actor_id}}+${{github.actor}}@users.noreply.github.com"
+
+          - name: Update Commit File
+            run: |
+                set +o noclobber
+                echo "$LATEST_COMMIT" > ./CURRENT_COMMIT
+
+          - name: Commit Changes
+            id: commit
+            run: |
+                git add CURRENT_COMMIT
+                git commit -m "Automated: Update COMMIT to $LATEST_COMMIT"
+
+                commit=$(git rev-parse HEAD)
+                echo "commit=$commit" >> $GITHUB_OUTPUT
+
+                git push
+
+    release-artifacts:
+        runs-on: ubuntu-latest
+        needs: [check, build-linux, build-macos, build-windows, update-commit]
+        permissions:
+            contents: write
+        steps:
+
+          - name: Download Artifact soloud_macos
+            uses: actions/download-artifact@v4
+            with:
+                name: soloud_macos
+                path: soloud_macos
+                github-token: ${{github.token}}
+                repository: ${{github.repository}}
+                run-id: ${{needs.build-macos.outputs.runid}}
+
+          - name: Release Artifacts
+            uses: ncipollo/release-action@v1.16.0
+            with:
+                artifacts: soloud_windows/soloud_windows_x64_debug.7z, soloud_windows/soloud_windows_x64_release.7z, soloud_windows/soloud_windows_arm64_debug.7z, soloud_windows/soloud_windows_arm64_release.7z, soloud_linux/soloud_linux_x64_debug.7z, soloud_linux/soloud_linux_x64_release.7z,soloud_linux/soloud_linux_arm64_debug.7z, soloud_linux/soloud_linux_arm64_release.7z, soloud_macos/soloud_macos_x64_debug.7z, soloud_macos/soloud_macos_x64_release.7z, soloud_macos/soloud_macos_arm64_debug.7z, soloud_macos/soloud_macos_arm64_release.7z
+                commit: ${{needs.update-commit.outputs.updated_commit}}
+                tag: ${{needs.check.outputs.latest_commit}}
+                body: Build for commit ${{needs.check.outputs.latest_commit}}.
