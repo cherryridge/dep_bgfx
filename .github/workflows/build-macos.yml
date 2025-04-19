@@ -37,3 +37,11 @@ jobs:
             with:
                 repository: bkaradzic/bimg
                 path: bimg
+
+          - name: Upload Archive
+            uses: actions/upload-artifact@v4
+            with:
+                name: bgfx_macos
+                path: |
+                    *.7z
+                retention-days: 7

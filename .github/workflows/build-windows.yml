@@ -64,8 +64,6 @@ jobs:
                 ..\bx\tools\bin\windows\genie.exe --platform=ARM64 vs2022
                 msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Debug /p:Platform=ARM64
                 msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Release /p:Platform=ARM64
-                ..\bx\tools\bin\windows\genie.exe --with-tools --platform=ARM vs2022
-                msbuild ".build/projects/vs2022/shaderc.vcxproj" /m /p:Configuration=Release /p:Platform=ARM
 
           - name: Compress Product
             shell: pwsh
@@ -75,7 +73,16 @@ jobs:
                 cp -r bgfx\include\* temp\include
                 cp -r bx\include\* temp\include
                 cp -r bimg\include\* temp\include
-                7z a bgfx_windows_x64_debug.7z .\bgfx\.build\win64_vs2022\bin\bgfxDebug.lib .\bgfx\.build\win64_vs2022\bin\bgfxDebug.pdb .\bgfx\.build\win64_vs2022\bin\bxDebug.lib .\bgfx\.build\win64_vs2022\bin\bxDebug.pdb .\bgfx\.build\win64_vs2022\bin\bimgDebug.lib .\bgfx\.build\win64_vs2022\bin\bimgDebug.pdb .\temp\include VERSION.txt
-                7z a bgfx_windows_x64_release.7z .\bgfx\.build\win64_vs2022\bin\bgfxRelease.lib .\bgfx\.build\win64_vs2022\bin\bgfxRelease.pdb .\bgfx\.build\win64_vs2022\bin\bxRelease.lib .\bgfx\.build\win64_vs2022\bin\bxRelease.pdb .\bgfx\.build\win64_vs2022\bin\bimgRelease.lib .\bgfx\.build\win64_vs2022\bin\bimgRelease.pdb .\bgfx\.build\win64_vs2022\bin\shadercRelease.exe .\temp\include VERSION.txt
-                7z a bgfx_windows_arm64_debug.7z .\bgfx\scripts\bgfxDebug.lib .\bgfx\scripts\bgfxDebug.pdb .\bimg\scripts\bimgDebug.lib .\bimg\scripts\bimgDebug.pdb .\bx\scripts\bxDebug.lib .\bx\scripts\bxDebug.pdb .\temp\include VERSION.txt
-                7z a bgfx_windows_arm64_release.7z .\bgfx\scripts\bgfxRelease.lib .\bgfx\scripts\bgfxRelease.pdb .\bimg\scripts\bimgRelease.lib .\bimg\scripts\bimgRelease.pdb .\bx\scripts\bxRelease.lib .\bx\scripts\bxRelease.pdb .\bgfx\scripts\shadercRelease.exe .\temp\include VERSION.txt
+                mv .\bgfx\.build\win64_vs2022\bin\shadercRelease.exe .\shaderc.exe
+                7z a bgfx_windows_x64_debug.7z .\bgfx\.build\win64_vs2022\bin\bgfxDebug.lib .\bgfx\.build\win64_vs2022\bin\bgfxDebug.pdb .\bgfx\.build\win64_vs2022\bin\bxDebug.lib .\bgfx\.build\win64_vs2022\bin\bxDebug.pdb .\bgfx\.build\win64_vs2022\bin\bimgDebug.lib .\bgfx\.build\win64_vs2022\bin\bimgDebug.pdb .\shaderc.exe .\temp\include VERSION.txt
+                7z a bgfx_windows_x64_release.7z .\bgfx\.build\win64_vs2022\bin\bgfxRelease.lib .\bgfx\.build\win64_vs2022\bin\bgfxRelease.pdb .\bgfx\.build\win64_vs2022\bin\bxRelease.lib .\bgfx\.build\win64_vs2022\bin\bxRelease.pdb .\bgfx\.build\win64_vs2022\bin\bimgRelease.lib .\bgfx\.build\win64_vs2022\bin\bimgRelease.pdb .\shaderc.exe .\temp\include VERSION.txt
+                7z a bgfx_windows_arm64_debug.7z .\bgfx\scripts\bgfxDebug.lib .\bgfx\scripts\bgfxDebug.pdb .\bimg\scripts\bimgDebug.lib .\bimg\scripts\bimgDebug.pdb .\bx\scripts\bxDebug.lib .\bx\scripts\bxDebug.pdb .\shaderc.exe .\temp\include VERSION.txt
+                7z a bgfx_windows_arm64_release.7z .\bgfx\scripts\bgfxRelease.lib .\bgfx\scripts\bgfxRelease.pdb .\bimg\scripts\bimgRelease.lib .\bimg\scripts\bimgRelease.pdb .\bx\scripts\bxRelease.lib .\bx\scripts\bxRelease.pdb .\shaderc.exe .\temp\include VERSION.txt
+
+          - name: Upload Archive
+            uses: actions/upload-artifact@v4
+            with:
+                name: bgfx_windows
+                path: |
+                    *.7z
+                retention-days: 7
