@@ -38,6 +38,9 @@ jobs:
                 repository: bkaradzic/bimg
                 path: bimg
 
+          - name: Get MSBuild
+            uses: microsoft/setup-msbuild@v2
+
           - name: Install ARM64 Windows SDK
             uses: ChristopheLav/windows-sdk-install@v1
             with:
