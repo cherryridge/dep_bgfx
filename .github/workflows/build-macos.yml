@@ -42,14 +42,14 @@ jobs:
             shell: bash
             run: |
                 cd bgfx
-                ../bx/tools/bin/darwin/genie --with-tools --xcode=osx --platform=x64 xcode15
+                ../bx/tools/bin/darwin/genie --with-tools --platform=x64 xcode15
                 cd .build/projects/xcode15
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64 clean build
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64 clean build
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64 clean build
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=x86_64 clean build
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=x86_64 clean build
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=x86_64 clean build
+                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64
+                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64
+                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64
+                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=x86_64
+                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=x86_64
+                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=x86_64
                 cd ../..
                 ls
 
@@ -57,12 +57,12 @@ jobs:
             shell: bash
             run: |
                 cd bgfx/.build/projects/xcode15
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=arm64 clean build
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=arm64 clean build
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=arm64 clean build
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=arm64 clean build
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=arm64 clean build
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=arm64 clean build
+                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=arm64
+                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=arm64
+                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=arm64
+                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=arm64
+                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=arm64
+                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=arm64
                 cd ../..
                 ls
 
