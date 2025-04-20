@@ -38,16 +38,12 @@ jobs:
                 repository: bkaradzic/bimg
                 path: bimg
 
-          - name: Generate Build Files
-            shell: bash
-            run: |
-                cd bgfx
-                ../bx/tools/bin/darwin/genie --with-tools --gcc=osx-x64 xcode15
-
           - name: Build MacOS x64
             shell: bash
             run: |
-                cd bgfx/.build/projects/xcode15
+                cd bgfx
+                ../bx/tools/bin/darwin/genie --with-tools --xcode=osx --platform=x64 xcode15
+                cd .build/projects/xcode15
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64 clean build
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64 clean build
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64 clean build
