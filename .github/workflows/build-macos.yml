@@ -42,7 +42,7 @@ jobs:
             shell: bash
             run: |
                 cd bgfx
-                ../bx/tools/bin/darwin/genie --with-tools xcode15
+                ../bx/tools/bin/darwin/genie --with-tools --gcc=osx-x64 xcode15
 
           - name: Build MacOS x64
             shell: bash
