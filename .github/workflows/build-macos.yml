@@ -16,7 +16,7 @@ on:
                 required: true
 
 jobs:
-    x64:
+    build:
         runs-on: macos-latest
         steps:
 
@@ -37,6 +37,24 @@ jobs:
             with:
                 repository: bkaradzic/bimg
                 path: bimg
+
+          - name: Build MacOS x64
+            shell: bash
+            run: |
+                cd bgfx
+                ../bx/tools/bin/darwin/genie --with-tools --gcc=linux-gcc --platform=x64 ninja
+                cd .build/projects/ninja-linux-gcc
+                ninja -C debug64 bgfx bimg bx
+                ninja -C release64 bgfx bimg bx shaderc
+
+          - name: Build MacOS arm64
+            shell: bash
+            run: |
+                cd bgfx
+                ../bx/tools/bin/darwin/genie --with-tools --gcc=linux-arm-gcc --platform=ARM64 ninja
+                cd .build/projects/ninja-linux-arm-gcc
+                ninja -C debug64 bgfx bimg bx
+                ninja -C release64 bgfx bimg bx shaderc
 
           - name: Upload Archive
             uses: actions/upload-artifact@v4

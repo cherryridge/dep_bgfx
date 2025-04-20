@@ -16,7 +16,7 @@ on:
                 required: true
 
 jobs:
-    x64:
+    build:
         runs-on: windows-latest
         steps:
 
