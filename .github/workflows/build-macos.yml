@@ -38,6 +38,15 @@ jobs:
                 repository: bkaradzic/bimg
                 path: bimg
 
+          - name: Get Additional Resources
+            shell: bash
+            run: |
+                echo ${{inputs.commit-sha}} >> VERSION.txt
+                mkdir -p temp/include
+                cp -a bgfx/include/* temp/include
+                cp -a bx/include/* temp/include
+                cp -a bimg/include/* temp/include
+
           - name: Build MacOS x64
             shell: bash
             run: |
@@ -50,8 +59,16 @@ jobs:
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=x86_64
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=x86_64
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=x86_64
+                xcodebuild -project shaderc.xcodeproj -scheme shaderc -configuration Release ARCHS=x86_64
                 cd ../..
                 ls
+
+          - name: Compress Product x64
+            shell: bash
+            run: |
+                mv bgfx/script/shadercRelease shaderc
+                7z a bgfx_macos_x64_debug.7z ./bgfx/scripts/libbgfxDebug.a ./bx/scripts/libbxDebug.a ./bimg/scripts/libbimgDebug.a shaderc ./temp/include VERSION.txt
+                7z a bgfx_macos_x64_release.7z ./bgfx/scripts/libbgfxRelease.a ./bx/scripts/libbxRelease.a ./bimg/scripts/libbimgRelease.a shaderc ./temp/include VERSION.txt
 
           - name: Build MacOS arm64
             shell: bash
@@ -65,25 +82,16 @@ jobs:
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=arm64
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=arm64
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=arm64
+                xcodebuild -project shaderc.xcodeproj -scheme shaderc -configuration Release ARCHS=arm64
                 cd ../..
                 ls
 
-          - name: Compress Product
+          - name: Compress Product arm64
             shell: bash
             run: |
-                echo ${{inputs.commit-sha}} >> VERSION.txt
-                mkdir -p temp/include
-                cp -a bgfx/include/* temp/include
-                cp -a bx/include/* temp/include
-                cp -a bimg/include/* temp/include
-                mkdir x64
-                mkdir arm64
-                mv bgfx/.build/linux64_gcc/bin/shadercRelease x64/shaderc
-                mv bgfx/.build/linux32_arm_gcc/bin/shadercRelease arm64/shaderc
-                7z a bgfx_linux_x64_debug.7z ./bgfx/.build/linux64_gcc/bin/libbgfxDebug.a ./bgfx/.build/linux64_gcc/bin/libbxDebug.a ./bgfx/.build/linux64_gcc/bin/libbimgDebug.a x64/shaderc ./temp/include VERSION.txt
-                7z a bgfx_linux_x64_release.7z ./bgfx/.build/linux64_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux64_gcc/bin/libbxRelease.a ./bgfx/.build/linux64_gcc/bin/libbimgRelease.a x64/shaderc ./temp/include VERSION.txt
-                7z a bgfx_linux_arm64_debug.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgDebug.a arm64/shaderc ./temp/include VERSION.txt
-                7z a bgfx_linux_arm64_release.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgRelease.a arm64/shaderc ./temp/include VERSION.txt
+                mv bgfx/script/shadercRelease shaderc
+                7z a bgfx_macos_arm64_debug.7z ./bgfx/scripts/libbgfxDebug.a ./bx/scripts/libbxDebug.a ./bimg/scripts/libbimgDebug.a shaderc ./temp/include VERSION.txt
+                7z a bgfx_macos_arm64_release.7z ./bgfx/scripts/libbgfxRelease.a ./bx/scripts/libbxRelease.a ./bimg/scripts/libbimgRelease.a shaderc ./temp/include VERSION.txt
 
           - name: Upload Archive
             uses: actions/upload-artifact@v4
