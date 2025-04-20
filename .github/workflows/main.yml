@@ -36,7 +36,7 @@ jobs:
                 
                 echo "Built commit: $current_commit"
                 echo "Latest commit: $latest_commit"
-                echo "tag=commit-${str:0:7}" >> $GITHUB_OUTPUT
+                echo "tag=commit-${latest_commit:0:7}" >> $GITHUB_OUTPUT
 
                 if [ "$current_commit" = "$latest_commit" ]; then
                     echo "update=false" >> $GITHUB_OUTPUT
