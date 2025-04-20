@@ -109,11 +109,29 @@ jobs:
             contents: write
         steps:
 
-          - name: Download Artifact soloud_macos
+          - name: Download Artifact bgfx_windows
             uses: actions/download-artifact@v4
             with:
-                name: soloud_macos
-                path: soloud_macos
+                name: bgfx_windows
+                path: bgfx_windows
+                github-token: ${{github.token}}
+                repository: ${{github.repository}}
+                run-id: ${{needs.build-macos.outputs.runid}}
+
+          - name: Download Artifact bgfx_linux
+            uses: actions/download-artifact@v4
+            with:
+                name: bgfx_linux
+                path: bgfx_linux
+                github-token: ${{github.token}}
+                repository: ${{github.repository}}
+                run-id: ${{needs.build-macos.outputs.runid}}
+
+          - name: Download Artifact bgfx_macos
+            uses: actions/download-artifact@v4
+            with:
+                name: bgfx_macos
+                path: bgfx_macos
                 github-token: ${{github.token}}
                 repository: ${{github.repository}}
                 run-id: ${{needs.build-macos.outputs.runid}}
@@ -121,7 +139,7 @@ jobs:
           - name: Release Artifacts
             uses: ncipollo/release-action@v1.16.0
             with:
-                artifacts: soloud_windows/soloud_windows_x64_debug.7z, soloud_windows/soloud_windows_x64_release.7z, soloud_windows/soloud_windows_arm64_debug.7z, soloud_windows/soloud_windows_arm64_release.7z, soloud_linux/soloud_linux_x64_debug.7z, soloud_linux/soloud_linux_x64_release.7z,soloud_linux/soloud_linux_arm64_debug.7z, soloud_linux/soloud_linux_arm64_release.7z, soloud_macos/soloud_macos_x64_debug.7z, soloud_macos/soloud_macos_x64_release.7z, soloud_macos/soloud_macos_arm64_debug.7z, soloud_macos/soloud_macos_arm64_release.7z
+                artifacts: bgfx_windows/bgfx_windows_x64_debug.7z, bgfx_windows/bgfx_windows_x64_release.7z, bgfx_windows/bgfx_windows_arm64_debug.7z, bgfx_windows/bgfx_windows_arm64_release.7z, bgfx_linux/bgfx_linux_x64_debug.7z, bgfx_linux/bgfx_linux_x64_release.7z,bgfx_linux/bgfx_linux_arm64_debug.7z, bgfx_linux/bgfx_linux_arm64_release.7z, bgfx_macos/bgfx_macos_x64_debug.7z, bgfx_macos/bgfx_macos_x64_release.7z, bgfx_macos/bgfx_macos_arm64_debug.7z, bgfx_macos/bgfx_macos_arm64_release.7z
                 commit: ${{needs.update-commit.outputs.updated_commit}}
                 tag: ${{needs.check.outputs.latest_commit}}
                 body: Build for commit ${{needs.check.outputs.latest_commit}}.
