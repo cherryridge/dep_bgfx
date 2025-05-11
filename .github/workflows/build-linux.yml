@@ -86,10 +86,10 @@ jobs:
                 mkdir arm64
                 mv bgfx/.build/linux64_gcc/bin/shadercRelease x64/shaderc
                 mv bgfx/.build/linux32_arm_gcc/bin/shadercRelease arm64/shaderc
-                7z a bgfx_linux_x64_debug.7z ./bgfx/.build/linux64_gcc/bin/libbgfxDebug.a ./bgfx/.build/linux64_gcc/bin/libbxDebug.a ./bgfx/.build/linux64_gcc/bin/libbimgDebug.a x64/shaderc ./temp/include VERSION.txt
-                7z a bgfx_linux_x64_release.7z ./bgfx/.build/linux64_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux64_gcc/bin/libbxRelease.a ./bgfx/.build/linux64_gcc/bin/libbimgRelease.a x64/shaderc ./temp/include VERSION.txt
-                7z a bgfx_linux_arm64_debug.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgDebug.a arm64/shaderc ./temp/include VERSION.txt
-                7z a bgfx_linux_arm64_release.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgRelease.a arm64/shaderc ./temp/include VERSION.txt
+                7z a bgfx_linux_x64_debug.7z ./bgfx/.build/linux64_gcc/bin/libbgfxDebug.a ./bgfx/.build/linux64_gcc/bin/libbxDebug.a ./bgfx/.build/linux64_gcc/bin/libbimgDebug.a ./x64/shaderc ./temp/include VERSION.txt
+                7z a bgfx_linux_x64_release.7z ./bgfx/.build/linux64_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux64_gcc/bin/libbxRelease.a ./bgfx/.build/linux64_gcc/bin/libbimgRelease.a ./x64/shaderc ./temp/include VERSION.txt
+                7z a bgfx_linux_arm64_debug.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgDebug.a ./arm64/shaderc ./temp/include VERSION.txt
+                7z a bgfx_linux_arm64_release.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgRelease.a ./arm64/shaderc ./temp/include VERSION.txt
 
           - name: Upload Archive
             uses: actions/upload-artifact@v4
