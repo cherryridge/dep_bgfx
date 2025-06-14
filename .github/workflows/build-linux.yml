@@ -13,6 +13,7 @@ on:
         inputs:
             commit-sha:
                 type: string
+                description: Target commit
                 required: true
 
 jobs:
