@@ -48,22 +48,41 @@ jobs:
                 version-sdk: 26100
                 features: "OptionId.DesktopCPParm64"
 
-          - name: Build Windows x64
+          - name: Build Windows x64 Debug
             shell: pwsh
             run: |
                 cd bgfx
                 ..\bx\tools\bin\windows\genie.exe --platform=x64 vs2022
+                $env:CL = "/Zi /Od /FC $env:CL"
+                $env:LINK = "/DEBUG:FULL $env:LINK"
                 msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Debug /p:Platform=x64
+
+          - name: Build Windows x64 Release
+            shell: pwsh
+            run: |
+                cd bgfx
                 ..\bx\tools\bin\windows\genie.exe --with-tools --platform=x64 vs2022
                 msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Release /p:Platform=x64
 
-          - name: Build Windows arm64
+          - name: Delete Projects
             shell: pwsh
             run: |
                 cd bgfx
                 del -r .build\projects
+
+          - name: Build Windows arm64 Debug
+            shell: pwsh
+            run: |
+                cd bgfx
                 ..\bx\tools\bin\windows\genie.exe --platform=ARM64 vs2022
+                $env:CL = "/Zi /Od /FC $env:CL"
+                $env:LINK = "/DEBUG:FULL $env:LINK"
                 msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Debug /p:Platform=ARM64
+
+          - name: Build Windows arm64 Release
+            shell: pwsh
+            run: |
+                cd bgfx
                 msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Release /p:Platform=ARM64
 
           - name: Compress Product
