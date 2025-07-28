@@ -61,7 +61,7 @@ jobs:
                 cd bgfx
                 ../bx/tools/bin/linux/genie --with-tools --gcc=linux-gcc --platform=x64 gmake
                 cd .build/projects/gmake-linux-gcc
-                make -j$(nproc) config=debug64 bgfx bimg bx
+                make -j$(nproc) config=debug64 CFLAGS="-O0 -g3 -fno-omit-frame-pointer" CXXFLAGS="-O0 -g3 -fno-omit-frame-pointer" bgfx bimg bx
                 make -j$(nproc) config=release64 bgfx bimg bx shaderc
 
           - name: Build Linux arm64
@@ -72,7 +72,7 @@ jobs:
                 ../bx/tools/bin/linux/genie --with-tools --gcc=linux-arm-gcc --platform=ARM64 gmake
                 cd .build/projects/gmake-linux-arm-gcc
                 sed -i 's/-m64//g' *
-                make -j$(nproc) ARCH= CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar RANLIB=aarch64-linux-gnu-ranlib config=debug64 bgfx bimg bx
+                make -j$(nproc) ARCH= CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar RANLIB=aarch64-linux-gnu-ranlib config=debug64 CFLAGS="-O0 -g3 -fno-omit-frame-pointer" CXXFLAGS="-O0 -g3 -fno-omit-frame-pointer" bgfx bimg bx
                 make -j$(nproc) ARCH= CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar RANLIB=aarch64-linux-gnu-ranlib config=release64 bgfx bimg bx shaderc
 
           - name: Compress Product
