@@ -54,9 +54,9 @@ jobs:
                 cd bgfx
                 ../bx/tools/bin/darwin/genie --with-tools --platform=x64 --xcode=osx xcode11
                 cd .build/projects/xcode11-osx
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64 GCC_GENERATE_DEBUGGING_SYMBOLS=YES DEBUG_INFORMATION_FORMAT=dwarf OTHER_CFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" OTHER_CPLUSPLUSFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" COPY_PHASE_STRIP=NO STRIP_INSTALLED_PRODUCT=NO DEPLOYMENT_POSTPROCESSING=NO
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64 GCC_GENERATE_DEBUGGING_SYMBOLS=YES DEBUG_INFORMATION_FORMAT=dwarf OTHER_CFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" OTHER_CPLUSPLUSFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" COPY_PHASE_STRIP=NO STRIP_INSTALLED_PRODUCT=NO DEPLOYMENT_POSTPROCESSING=NO
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64 GCC_GENERATE_DEBUGGING_SYMBOLS=YES DEBUG_INFORMATION_FORMAT=dwarf OTHER_CFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" OTHER_CPLUSPLUSFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" COPY_PHASE_STRIP=NO STRIP_INSTALLED_PRODUCT=NO DEPLOYMENT_POSTPROCESSING=NO
+                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64
+                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64
+                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=x86_64
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=x86_64
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=x86_64
@@ -82,9 +82,9 @@ jobs:
                 cd bgfx
                 ../bx/tools/bin/darwin/genie --with-tools --platform=ARM64 --xcode=osx xcode11
                 cd .build/projects/xcode11-osx
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=arm64 GCC_GENERATE_DEBUGGING_SYMBOLS=YES DEBUG_INFORMATION_FORMAT=dwarf OTHER_CFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" OTHER_CPLUSPLUSFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" COPY_PHASE_STRIP=NO STRIP_INSTALLED_PRODUCT=NO DEPLOYMENT_POSTPROCESSING=NO
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=arm64 GCC_GENERATE_DEBUGGING_SYMBOLS=YES DEBUG_INFORMATION_FORMAT=dwarf OTHER_CFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" OTHER_CPLUSPLUSFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" COPY_PHASE_STRIP=NO STRIP_INSTALLED_PRODUCT=NO DEPLOYMENT_POSTPROCESSING=NO
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=arm64 GCC_GENERATE_DEBUGGING_SYMBOLS=YES DEBUG_INFORMATION_FORMAT=dwarf OTHER_CFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" OTHER_CPLUSPLUSFLAGS="-g -fdebug-macro -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -fdebug-prefix-map=$PWD=/src" COPY_PHASE_STRIP=NO STRIP_INSTALLED_PRODUCT=NO DEPLOYMENT_POSTPROCESSING=NO
+                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=arm64
+                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=arm64
+                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=arm64
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=arm64
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=arm64
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=arm64
