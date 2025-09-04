@@ -121,7 +121,7 @@ jobs:
                 path: bgfx_windows
                 github-token: ${{github.token}}
                 repository: ${{github.repository}}
-                run-id: ${{needs.build-macos.outputs.runid}}
+                run-id: ${{needs.build-windows.outputs.runid}}
 
           - name: Download Artifact bgfx_linux
             uses: actions/download-artifact@v4
@@ -130,7 +130,7 @@ jobs:
                 path: bgfx_linux
                 github-token: ${{github.token}}
                 repository: ${{github.repository}}
-                run-id: ${{needs.build-macos.outputs.runid}}
+                run-id: ${{needs.build-linux.outputs.runid}}
 
           - name: Download Artifact bgfx_macos
             uses: actions/download-artifact@v4
@@ -147,4 +147,5 @@ jobs:
                 artifacts: bgfx_windows/bgfx_windows_x64_debug.7z, bgfx_windows/bgfx_windows_x64_release.7z, bgfx_windows/bgfx_windows_arm64_debug.7z, bgfx_windows/bgfx_windows_arm64_release.7z, bgfx_linux/bgfx_linux_x64_debug.7z, bgfx_linux/bgfx_linux_x64_release.7z, bgfx_linux/bgfx_linux_arm64_debug.7z, bgfx_linux/bgfx_linux_arm64_release.7z, bgfx_macos/bgfx_macos_x64_debug.7z, bgfx_macos/bgfx_macos_x64_release.7z, bgfx_macos/bgfx_macos_arm64_debug.7z, bgfx_macos/bgfx_macos_arm64_release.7z
                 commit: ${{needs.update-commit.outputs.updated_commit}}
                 tag: ${{needs.check.outputs.tag}}
+
                 body: Build for commit ${{needs.check.outputs.latest_commit}}.
