@@ -147,5 +147,4 @@ jobs:
                 artifacts: bgfx_windows/bgfx_windows_x64_debug.7z, bgfx_windows/bgfx_windows_x64_release.7z, bgfx_windows/bgfx_windows_arm64_debug.7z, bgfx_windows/bgfx_windows_arm64_release.7z, bgfx_linux/bgfx_linux_x64_debug.7z, bgfx_linux/bgfx_linux_x64_release.7z, bgfx_linux/bgfx_linux_arm64_debug.7z, bgfx_linux/bgfx_linux_arm64_release.7z, bgfx_macos/bgfx_macos_x64_debug.7z, bgfx_macos/bgfx_macos_x64_release.7z, bgfx_macos/bgfx_macos_arm64_debug.7z, bgfx_macos/bgfx_macos_arm64_release.7z
                 commit: ${{needs.update-commit.outputs.updated_commit}}
                 tag: ${{needs.check.outputs.tag}}
-
                 body: Build for commit ${{needs.check.outputs.latest_commit}}.
