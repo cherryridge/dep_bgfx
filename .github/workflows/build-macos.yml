@@ -53,8 +53,8 @@ jobs:
             run: |
                 cd bgfx
                 ../bx/tools/bin/darwin/genie --with-tools --platform=x64 --xcode=osx xcode11
+                cd .build/projects
                 ls
-                cd .build/projects/xcode11-osx
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64
