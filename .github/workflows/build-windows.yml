@@ -75,7 +75,7 @@ jobs:
             run: |
                 cd bgfx
                 ..\bx\tools\bin\windows\genie.exe --platform=ARM64 vs2022
-                $env:CL = "/Zi /Od /FC $env:CL"
+                $env:CL = "/DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /Zi /Od /FC $env:CL"
                 $env:LINK = "/DEBUG:FULL $env:LINK"
                 msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Debug /p:Platform=ARM64
 
