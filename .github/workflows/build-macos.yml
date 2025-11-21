@@ -72,9 +72,13 @@ jobs:
           - name: Compress Product x64
             shell: bash
             run: |
+                cd bgfx/.build/projects/xcode11
+                ls
+                cd ../../../..
+                echo "==========================================="
                 mv bgfx/.build/projects/xcode11/shadercRelease shaderc
-                7z a bgfx_macos_x64_debug.7z ./bgfx/scripts/libbgfxDebug.a ./bx/scripts/libbxDebug.a ./bimg/scripts/libbimgDebug.a shaderc ./temp/include VERSION.txt
-                7z a bgfx_macos_x64_release.7z ./bgfx/scripts/libbgfxRelease.a ./bx/scripts/libbxRelease.a ./bimg/scripts/libbimgRelease.a shaderc ./temp/include VERSION.txt
+                7z a bgfx_macos_x64_debug.7z ./bgfx/.build/projects/xcode11/libbgfxDebug.a ./bgfx/.build/projects/xcode11/libbxDebug.a ../bgfx/.build/projects/xcode11/libbimgDebug.a shaderc ./temp/include VERSION.txt
+                7z a bgfx_macos_x64_release.7z ./bgfx/.build/projects/xcode11/libbgfxRelease.a ./bgfx/.build/projects/xcode11/libbxRelease.a ./bgfx/.build/projects/xcode11/libbimgRelease.a shaderc ./temp/include VERSION.txt
 
           - name: Build MacOS arm64
             shell: bash
