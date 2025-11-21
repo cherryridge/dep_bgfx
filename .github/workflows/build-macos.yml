@@ -74,6 +74,7 @@ jobs:
             run: |
                 cd bgfx/.build/projects/xcode11
                 ls
+                thisisacommandtoforcefailure:)
                 mv shadercRelease shaderc
                 cd ../..
                 7z a bgfx_macos_x64_debug.7z ./bgfx/scripts/libbgfxDebug.a ./bx/scripts/libbxDebug.a ./bimg/scripts/libbimgDebug.a shaderc ./temp/include VERSION.txt
