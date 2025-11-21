@@ -72,7 +72,7 @@ jobs:
           - name: Compress Product x64
             shell: bash
             run: |
-                cd bgfx/.build/projects
+                cd bgfx/.build/projects/xcode11
                 ls
                 mv shadercRelease shaderc
                 cd ../..
