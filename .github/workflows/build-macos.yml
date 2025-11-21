@@ -100,7 +100,7 @@ jobs:
           - name: Compress Product arm64
             shell: bash
             run: |
-                mv bgfx/scripts/shadercRelease shaderc
+                mv ./bgfx/.build/projects/xcode11/shadercRelease shaderc
                 7z a bgfx_macos_arm64_debug.7z ./bgfx/.build/projects/xcode11/libbgfxDebug.a ./bgfx/.build/projects/xcode11/libbxDebug.a ./bgfx/.build/projects/xcode11/libbimgDebug.a shaderc ./temp/include VERSION.txt
                 7z a bgfx_macos_arm64_release.7z ./bgfx/.build/projects/xcode11/libbgfxRelease.a ./bgfx/.build/projects/xcode11/libbxRelease.a ./bgfx/.build/projects/xcode11/libbimgRelease.a shaderc ./temp/include VERSION.txt
 
