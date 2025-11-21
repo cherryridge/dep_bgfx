@@ -72,7 +72,10 @@ jobs:
           - name: Compress Product x64
             shell: bash
             run: |
-                mv bgfx/scripts/shadercRelease shaderc
+                cd bgfx/scripts
+                ls
+                mv shadercRelease shaderc
+                cd ../..
                 7z a bgfx_macos_x64_debug.7z ./bgfx/scripts/libbgfxDebug.a ./bx/scripts/libbxDebug.a ./bimg/scripts/libbimgDebug.a shaderc ./temp/include VERSION.txt
                 7z a bgfx_macos_x64_release.7z ./bgfx/scripts/libbgfxRelease.a ./bx/scripts/libbxRelease.a ./bimg/scripts/libbimgRelease.a shaderc ./temp/include VERSION.txt
 
