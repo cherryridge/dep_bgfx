@@ -54,20 +54,13 @@ jobs:
                 cd bgfx
                 ../bx/tools/bin/darwin/genie --with-tools --platform=x64 --xcode=osx xcode11
                 cd .build/projects/xcode11
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=x86_64
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=x86_64
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=x86_64
-                xcodebuild -project fcpp.xcodeproj -scheme fcpp -configuration Debug ARCHS=x86_64
-                xcodebuild -project glslang.xcodeproj -scheme glslang -configuration Debug ARCHS=x86_64
-                xcodebuild -project glsl-optimizer.xcodeproj -scheme glsl-optimizer -configuration Debug ARCHS=x86_64
-                xcodebuild -project spirv-opt.xcodeproj -scheme spirv-opt -configuration Debug ARCHS=x86_64
-                xcodebuild -project spirv-cross.xcodeproj -scheme spirv-cross -configuration Debug ARCHS=x86_64
-                xcodebuild -project shaderc.xcodeproj -scheme "shaderc Release" -configuration Release ARCHS=x86_64
-                cd ../..
-                ls
+                xcodebuild -workspace bgfx.xcworkspace -scheme bgfx -configuration Debug ARCHS=x86_64
+                xcodebuild -workspace bgfx.xcworkspace -scheme bx -configuration Debug ARCHS=x86_64
+                xcodebuild -workspace bgfx.xcworkspace -scheme bimg -configuration Debug ARCHS=x86_64
+                xcodebuild -workspace bgfx.xcworkspace -scheme bgfx -configuration Release ARCHS=x86_64
+                xcodebuild -workspace bgfx.xcworkspace -scheme bx -configuration Release ARCHS=x86_64
+                xcodebuild -workspace bgfx.xcworkspace -scheme bimg -configuration Release ARCHS=x86_64
+                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=x86_64
 
           - name: Compress Product x64
             shell: bash
@@ -82,20 +75,13 @@ jobs:
                 cd bgfx
                 ../bx/tools/bin/darwin/genie --with-tools --platform=ARM64 --xcode=osx xcode11
                 cd .build/projects/xcode11
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=arm64
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=arm64
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=arm64
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=arm64
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=arm64
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=arm64
-                xcodebuild -project fcpp.xcodeproj -scheme fcpp -configuration Debug ARCHS=arm64
-                xcodebuild -project glslang.xcodeproj -scheme glslang -configuration Debug ARCHS=arm64
-                xcodebuild -project glsl-optimizer.xcodeproj -scheme glsl-optimizer -configuration Debug ARCHS=arm64
-                xcodebuild -project spirv-opt.xcodeproj -scheme spirv-opt -configuration Debug ARCHS=arm64
-                xcodebuild -project spirv-cross.xcodeproj -scheme spirv-cross -configuration Debug ARCHS=arm64
-                xcodebuild -project shaderc.xcodeproj -scheme "shaderc Release" -configuration Release ARCHS=arm64
-                cd ../..
-                ls
+                xcodebuild -workspace bgfx.xcworkspace -scheme bgfx -configuration Debug ARCHS=arm64
+                xcodebuild -workspace bgfx.xcworkspace -scheme bx -configuration Debug ARCHS=arm64
+                xcodebuild -workspace bgfx.xcworkspace -scheme bimg -configuration Debug ARCHS=arm64
+                xcodebuild -workspace bgfx.xcworkspace -scheme bgfx -configuration Release ARCHS=arm64
+                xcodebuild -workspace bgfx.xcworkspace -scheme bx -configuration Release ARCHS=arm64
+                xcodebuild -workspace bgfx.xcworkspace -scheme bimg -configuration Release ARCHS=arm64
+                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=arm64
 
           - name: Compress Product arm64
             shell: bash
