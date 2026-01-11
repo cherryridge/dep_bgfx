@@ -60,6 +60,7 @@ jobs:
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=x86_64
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=x86_64
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=x86_64
+                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Release ARCHS=x86_64
                 xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=x86_64
 
           - name: Compress Product x64
@@ -81,6 +82,7 @@ jobs:
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=arm64
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=arm64
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=arm64
+                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Release ARCHS=arm64
                 xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=arm64
 
           - name: Compress Product arm64
