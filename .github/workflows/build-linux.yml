@@ -26,7 +26,7 @@ jobs:
             with:
                 repository: bkaradzic/bgfx
                 path: bgfx
-        
+
           - name: Checkout BX
             uses: actions/checkout@v4
             with:
@@ -43,7 +43,7 @@ jobs:
             shell: bash
             run: |
                 sudo apt update
-                sudo apt install libgl-dev
+                sudo apt install clang llvm libgl-dev
                 sudo dpkg --add-architecture arm64
                 sudo sed -ri '/^Components:/a Architectures: amd64' "/etc/apt/sources.list.d/ubuntu.sources"
                 sudo tee /etc/apt/sources.list.d/ubuntu-ports.list >/dev/null <<'EOF'
@@ -59,8 +59,8 @@ jobs:
             shell: bash
             run: |
                 cd bgfx
-                ../bx/tools/bin/linux/genie --with-tools --gcc=linux-gcc --platform=x64 gmake
-                cd .build/projects/gmake-linux-gcc
+                ../bx/tools/bin/linux/genie --with-tools --gcc=linux-clang --platform=x64 gmake
+                cd .build/projects/gmake-linux-clang
                 make -j$(nproc) config=debug64 CFLAGS="-O0 -g3 -fno-omit-frame-pointer" CXXFLAGS="-O0 -g3 -fno-omit-frame-pointer" bgfx bimg bx
                 make -j$(nproc) config=release64 bgfx bimg bx shaderc
 
@@ -72,8 +72,8 @@ jobs:
                 ../bx/tools/bin/linux/genie --with-tools --gcc=linux-arm-gcc --platform=ARM64 gmake
                 cd .build/projects/gmake-linux-arm-gcc
                 sed -i 's/-m64//g' *
-                make -j$(nproc) ARCH= CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar RANLIB=aarch64-linux-gnu-ranlib config=debug64 CFLAGS="-O0 -g3 -fno-omit-frame-pointer" CXXFLAGS="-O0 -g3 -fno-omit-frame-pointer" bgfx bimg bx
-                make -j$(nproc) ARCH= CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar RANLIB=aarch64-linux-gnu-ranlib config=release64 bgfx bimg bx shaderc
+                make -j$(nproc) ARCH= CC="clang -target aarch64-linux-gnu" CXX="clang++ -target aarch64-linux-gnu" AR=aarch64-linux-gnu-ar RANLIB=aarch64-linux-gnu-ranlib config=debug64 CFLAGS="-O0 -g3 -fno-omit-frame-pointer" CXXFLAGS="-O0 -g3 -fno-omit-frame-pointer" bgfx bimg bx
+                make -j$(nproc) ARCH= CC="clang -target aarch64-linux-gnu" CXX="clang++ -target aarch64-linux-gnu" AR=aarch64-linux-gnu-ar RANLIB=aarch64-linux-gnu-ranlib config=release64 bgfx bimg bx shaderc
 
           - name: Compress Product
             shell: bash
@@ -85,10 +85,10 @@ jobs:
                 cp -a bimg/include/* temp/include
                 mkdir x64
                 mkdir arm64
-                mv bgfx/.build/linux64_gcc/bin/shadercRelease x64/shaderc
+                mv bgfx/.build/linux64_clang/bin/shadercRelease x64/shaderc
                 mv bgfx/.build/linux32_arm_gcc/bin/shadercRelease arm64/shaderc
-                7z a bgfx_linux_x64_debug.7z ./bgfx/.build/linux64_gcc/bin/libbgfxDebug.a ./bgfx/.build/linux64_gcc/bin/libbxDebug.a ./bgfx/.build/linux64_gcc/bin/libbimgDebug.a ./x64/shaderc ./temp/include VERSION.txt
-                7z a bgfx_linux_x64_release.7z ./bgfx/.build/linux64_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux64_gcc/bin/libbxRelease.a ./bgfx/.build/linux64_gcc/bin/libbimgRelease.a ./x64/shaderc ./temp/include VERSION.txt
+                7z a bgfx_linux_x64_debug.7z ./bgfx/.build/linux64_clang/bin/libbgfxDebug.a ./bgfx/.build/linux64_clang/bin/libbxDebug.a ./bgfx/.build/linux64_clang/bin/libbimgDebug.a ./x64/shaderc ./temp/include VERSION.txt
+                7z a bgfx_linux_x64_release.7z ./bgfx/.build/linux64_clang/bin/libbgfxRelease.a ./bgfx/.build/linux64_clang/bin/libbxRelease.a ./bgfx/.build/linux64_clang/bin/libbimgRelease.a ./x64/shaderc ./temp/include VERSION.txt
                 7z a bgfx_linux_arm64_debug.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgDebug.a ./arm64/shaderc ./temp/include VERSION.txt
                 7z a bgfx_linux_arm64_release.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgRelease.a ./arm64/shaderc ./temp/include VERSION.txt
 

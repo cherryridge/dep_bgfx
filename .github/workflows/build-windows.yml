@@ -55,14 +55,14 @@ jobs:
                 ..\bx\tools\bin\windows\genie.exe --platform=x64 vs2022
                 $env:CL = "/Zi /Od /FC $env:CL"
                 $env:LINK = "/DEBUG:FULL $env:LINK"
-                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Debug /p:Platform=x64
+                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Debug /p:Platform=x64 /p:PlatformToolset=ClangCL
 
           - name: Build Windows x64 Release
             shell: pwsh
             run: |
                 cd bgfx
                 ..\bx\tools\bin\windows\genie.exe --with-tools --platform=x64 vs2022
-                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Release /p:Platform=x64
+                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=ClangCL
 
           - name: Delete Projects
             shell: pwsh
@@ -77,13 +77,13 @@ jobs:
                 ..\bx\tools\bin\windows\genie.exe --platform=ARM64 vs2022
                 $env:CL = "/DWINVER=0x0A00 /D_WIN32_WINNT=0x0A00 /Zi /Od /FC $env:CL"
                 $env:LINK = "/DEBUG:FULL $env:LINK"
-                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Debug /p:Platform=ARM64
+                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Debug /p:Platform=ARM64 /p:PlatformToolset=ClangCL
 
           - name: Build Windows arm64 Release
             shell: pwsh
             run: |
                 cd bgfx
-                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Release /p:Platform=ARM64
+                msbuild ".build/projects/vs2022/bgfx.sln" /m /p:Configuration=Release /p:Platform=ARM64 /p:PlatformToolset=ClangCL
 
           - name: Compress Product
             shell: pwsh
