@@ -39,6 +39,11 @@ jobs:
                 repository: bkaradzic/bimg
                 path: bimg
 
+          - name: Get Additional Resources
+            shell: bash
+            run: |
+                echo ${{inputs.commit-sha}} >> VERSION.txt
+
           - name: Install Dependencies
             shell: bash
             run: |
@@ -75,22 +80,41 @@ jobs:
                 make -j$(nproc) ARCH= CC="clang -target aarch64-linux-gnu" CXX="clang++ -target aarch64-linux-gnu" AR=aarch64-linux-gnu-ar RANLIB=aarch64-linux-gnu-ranlib config=debug64 CFLAGS="-O0 -g3 -fno-omit-frame-pointer" CXXFLAGS="-O0 -g3 -fno-omit-frame-pointer" bgfx bimg bx
                 make -j$(nproc) ARCH= CC="clang -target aarch64-linux-gnu" CXX="clang++ -target aarch64-linux-gnu" AR=aarch64-linux-gnu-ar RANLIB=aarch64-linux-gnu-ranlib config=release64 bgfx bimg bx shaderc
 
-          - name: Compress Product
+          - name: Compress Product x64
             shell: bash
-            run: |
-                echo ${{inputs.commit-sha}} >> VERSION.txt
+            run: |  
+                rm -rf temp
                 mkdir -p temp/include
                 cp -a bgfx/include/* temp/include
                 cp -a bx/include/* temp/include
                 cp -a bimg/include/* temp/include
-                mkdir x64
-                mkdir arm64
-                mv bgfx/.build/linux64_clang/bin/shadercRelease x64/shaderc
-                mv bgfx/.build/linux32_arm_gcc/bin/shadercRelease arm64/shaderc
-                7z a bgfx_linux_x64_debug.7z ./bgfx/.build/linux64_clang/bin/libbgfxDebug.a ./bgfx/.build/linux64_clang/bin/libbxDebug.a ./bgfx/.build/linux64_clang/bin/libbimgDebug.a ./x64/shaderc ./temp/include VERSION.txt
-                7z a bgfx_linux_x64_release.7z ./bgfx/.build/linux64_clang/bin/libbgfxRelease.a ./bgfx/.build/linux64_clang/bin/libbxRelease.a ./bgfx/.build/linux64_clang/bin/libbimgRelease.a ./x64/shaderc ./temp/include VERSION.txt
-                7z a bgfx_linux_arm64_debug.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgDebug.a ./arm64/shaderc ./temp/include VERSION.txt
-                7z a bgfx_linux_arm64_release.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgRelease.a ./arm64/shaderc ./temp/include VERSION.txt
+                mkdir -p temp/bin
+                cp bgfx/.build/linux64_clang/bin/shadercRelease temp/bin/shaderc
+                cp bgfx/tools/bin/linux/libdxcompiler.so temp/bin/libdxcompiler.so
+                cp bgfx/tools/bin/linux/libdxil.so temp/bin/libdxil.so
+                mkdir -p temp/windows
+                cp bgfx/tools/bin/windows/d3d4linux.exe temp/windows/d3d4linux.exe
+                cp bgfx/tools/bin/windows/d3dcompiler_47.dll temp/windows/d3dcompiler_47.dll
+                7z a bgfx_linux_x64_debug.7z ./bgfx/.build/linux64_clang/bin/libbgfxDebug.a ./bgfx/.build/linux64_clang/bin/libbxDebug.a ./bgfx/.build/linux64_clang/bin/libbimgDebug.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
+                7z a bgfx_linux_x64_release.7z ./bgfx/.build/linux64_clang/bin/libbgfxRelease.a ./bgfx/.build/linux64_clang/bin/libbxRelease.a ./bgfx/.build/linux64_clang/bin/libbimgRelease.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
+        
+          - name: Compress Product arm64
+            shell: bash
+            run: |
+                rm -rf temp
+                mkdir -p temp/include
+                cp -a bgfx/include/* temp/include
+                cp -a bx/include/* temp/include
+                cp -a bimg/include/* temp/include
+                mkdir -p temp/bin
+                cp bgfx/.build/linux32_arm_gcc/bin/shadercRelease temp/bin/shaderc
+                cp bgfx/tools/bin/linux/libdxcompiler.so temp/bin/libdxcompiler.so
+                cp bgfx/tools/bin/linux/libdxil.so temp/bin/libdxil.so
+                mkdir -p temp/windows
+                cp bgfx/tools/bin/windows/d3d4linux.exe temp/windows/d3d4linux.exe
+                cp bgfx/tools/bin/windows/d3dcompiler_47.dll temp/windows/d3dcompiler_47.dll
+                7z a bgfx_linux_arm64_debug.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbxDebug.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgDebug.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
+                7z a bgfx_linux_arm64_release.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgRelease.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
 
           - name: Upload Archive
             uses: actions/upload-artifact@v4

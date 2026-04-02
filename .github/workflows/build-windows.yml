@@ -40,10 +40,10 @@ jobs:
                 path: bimg
 
           - name: Get MSBuild
-            uses: microsoft/setup-msbuild@v2
+            uses: microsoft/setup-msbuild@v3
 
           - name: Install ARM64 Windows SDK
-            uses: ChristopheLav/windows-sdk-install@v1
+            uses: ChristopheLav/windows-sdk-install@v1.0.4
             with:
                 version-sdk: 26100
                 features: "OptionId.DesktopCPParm64"
@@ -93,11 +93,15 @@ jobs:
                 cp -r bgfx\include\* temp\include
                 cp -r bx\include\* temp\include
                 cp -r bimg\include\* temp\include
-                mv .\bgfx\.build\win64_vs2022\bin\shadercRelease.exe .\shaderc.exe
-                7z a bgfx_windows_x64_debug.7z .\bgfx\.build\win64_vs2022\bin\bgfxDebug.lib .\bgfx\.build\win64_vs2022\bin\bxDebug.lib .\bgfx\.build\win64_vs2022\bin\bimgDebug.lib .\shaderc.exe .\temp\include VERSION.txt
-                7z a bgfx_windows_x64_release.7z .\bgfx\.build\win64_vs2022\bin\bgfxRelease.lib .\bgfx\.build\win64_vs2022\bin\bxRelease.lib .\bgfx\.build\win64_vs2022\bin\bimgRelease.lib .\shaderc.exe .\temp\include VERSION.txt
-                7z a bgfx_windows_arm64_debug.7z .\bgfx\scripts\bgfxDebug.lib .\bx\scripts\bxDebug.lib .\bimg\scripts\bimgDebug.lib .\shaderc.exe .\temp\include VERSION.txt
-                7z a bgfx_windows_arm64_release.7z .\bgfx\scripts\bgfxRelease.lib .\bx\scripts\bxRelease.lib .\bimg\scripts\bimgRelease.lib .\shaderc.exe .\temp\include VERSION.txt
+                mkdir temp\bin
+                cp .\bgfx\.build\win64_vs2022\bin\shadercRelease.exe .\temp\bin\shaderc.exe
+                cp .\bgfx\tools\bin\windows\d3dcompiler_47.dll .\temp\bin\d3dcompiler_47.dll
+                cp .\bgfx\tools\bin\windows\dxcompiler.dll .\temp\bin\dxcompiler.dll
+                cp .\bgfx\tools\bin\windows\dxil.dll .\temp\bin\dxil.dll
+                7z a bgfx_windows_x64_debug.7z .\bgfx\.build\win64_vs2022\bin\bgfxDebug.lib .\bgfx\.build\win64_vs2022\bin\bxDebug.lib .\bgfx\.build\win64_vs2022\bin\bimgDebug.lib .\temp\include .\temp\bin VERSION.txt
+                7z a bgfx_windows_x64_release.7z .\bgfx\.build\win64_vs2022\bin\bgfxRelease.lib .\bgfx\.build\win64_vs2022\bin\bxRelease.lib .\bgfx\.build\win64_vs2022\bin\bimgRelease.lib .\temp\include .\temp\bin VERSION.txt
+                7z a bgfx_windows_arm64_debug.7z .\bgfx\scripts\bgfxDebug.lib .\bx\scripts\bxDebug.lib .\bimg\scripts\bimgDebug.lib .\temp\include .\temp\bin VERSION.txt
+                7z a bgfx_windows_arm64_release.7z .\bgfx\scripts\bgfxRelease.lib .\bx\scripts\bxRelease.lib .\bimg\scripts\bimgRelease.lib .\temp\include .\temp\bin VERSION.txt
 
           - name: Upload Archive
             uses: actions/upload-artifact@v4
