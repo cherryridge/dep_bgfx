@@ -72,8 +72,8 @@ jobs:
                 mkdir -p temp/windows
                 cp bgfx/tools/bin/windows/d3d4linux.exe temp/windows/d3d4linux.exe
                 cp bgfx/tools/bin/windows/d3dcompiler_47.dll temp/windows/d3dcompiler_47.dll
-                7z a bgfx_macos_x64_debug.7z ./bgfx/.build/projects/xcode11/libbgfxDebug.a ./bgfx/.build/projects/xcode11/libbxDebug.a ./bgfx/.build/projects/xcode11/libbimgDebug.a shaderc ./temp/include ./temp/bin ./temp/windows VERSION.txt
-                7z a bgfx_macos_x64_release.7z ./bgfx/.build/projects/xcode11/libbgfxRelease.a ./bgfx/.build/projects/xcode11/libbxRelease.a ./bgfx/.build/projects/xcode11/libbimgRelease.a shaderc ./temp/include ./temp/bin ./temp/windows VERSION.txt
+                7z a bgfx_macos_x64_debug.7z ./bgfx/.build/projects/xcode11/libbgfxDebug.a ./bgfx/.build/projects/xcode11/libbxDebug.a ./bgfx/.build/projects/xcode11/libbimgDebug.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
+                7z a bgfx_macos_x64_release.7z ./bgfx/.build/projects/xcode11/libbgfxRelease.a ./bgfx/.build/projects/xcode11/libbxRelease.a ./bgfx/.build/projects/xcode11/libbimgRelease.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
 
           - name: Build MacOS arm64
             shell: bash
@@ -103,8 +103,8 @@ jobs:
                 mkdir -p temp/windows
                 cp bgfx/tools/bin/windows/d3d4linux.exe temp/windows/d3d4linux.exe
                 cp bgfx/tools/bin/windows/d3dcompiler_47.dll temp/windows/d3dcompiler_47.dll
-                7z a bgfx_macos_arm64_debug.7z ./bgfx/.build/projects/xcode11/libbgfxDebug.a ./bgfx/.build/projects/xcode11/libbxDebug.a ./bgfx/.build/projects/xcode11/libbimgDebug.a shaderc ./temp/include ./temp/bin ./temp/windows VERSION.txt
-                7z a bgfx_macos_arm64_release.7z ./bgfx/.build/projects/xcode11/libbgfxRelease.a ./bgfx/.build/projects/xcode11/libbxRelease.a ./bgfx/.build/projects/xcode11/libbimgRelease.a shaderc ./temp/include ./temp/bin ./temp/windows VERSION.txt
+                7z a bgfx_macos_arm64_debug.7z ./bgfx/.build/projects/xcode11/libbgfxDebug.a ./bgfx/.build/projects/xcode11/libbxDebug.a ./bgfx/.build/projects/xcode11/libbimgDebug.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
+                7z a bgfx_macos_arm64_release.7z ./bgfx/.build/projects/xcode11/libbgfxRelease.a ./bgfx/.build/projects/xcode11/libbxRelease.a ./bgfx/.build/projects/xcode11/libbimgRelease.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
 
           - name: Upload Archive
             uses: actions/upload-artifact@v4
