@@ -22,19 +22,19 @@ jobs:
         steps:
 
           - name: Checkout BGFX
-            uses: actions/checkout@v4
+            uses: actions/checkout@v7
             with:
                 repository: bkaradzic/bgfx
                 path: bgfx
         
           - name: Checkout BX
-            uses: actions/checkout@v4
+            uses: actions/checkout@v7
             with:
                 repository: bkaradzic/bx
                 path: bx
 
           - name: Checkout BIMG
-            uses: actions/checkout@v4
+            uses: actions/checkout@v7
             with:
                 repository: bkaradzic/bimg
                 path: bimg
