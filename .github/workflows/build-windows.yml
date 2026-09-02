@@ -1,4 +1,4 @@
-﻿name: Build on Windows
+name: Build on Windows
 
 on:
     workflow_call:
@@ -104,7 +104,7 @@ jobs:
                 7z a bgfx_windows_arm64_release.7z .\bgfx\.build\arm64_vs2022\bin\bgfxRelease.lib .\bgfx\.build\arm64_vs2022\bin\bxRelease.lib .\bgfx\.build\arm64_vs2022\bin\bimgRelease.lib .\temp\include .\temp\bin VERSION.txt
 
           - name: Upload Archive
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@v7
             with:
                 name: bgfx_windows
                 path: |

@@ -1,4 +1,4 @@
-﻿name: Build on Linux
+name: Build on Linux
 
 on:
     workflow_call:
@@ -117,7 +117,7 @@ jobs:
                 7z a bgfx_linux_arm64_release.7z ./bgfx/.build/linux32_arm_gcc/bin/libbgfxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbxRelease.a ./bgfx/.build/linux32_arm_gcc/bin/libbimgRelease.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
 
           - name: Upload Archive
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@v7
             with:
                 name: bgfx_linux
                 path: |
