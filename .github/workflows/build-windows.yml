@@ -39,6 +39,15 @@ jobs:
                 repository: bkaradzic/bimg
                 path: bimg
 
+          - name: Remove MSVC-only preprocessor option for ClangCL
+            shell: pwsh
+            run: |
+                # Clang already uses a conforming preprocessor; this MSVC option fails under /WX.
+                $path = "bx/scripts/toolchain.lua"
+                $content = Get-Content -LiteralPath $path -Raw
+                $content = $content -replace '(?m)^[ \t]*"/Zc:preprocessor",[^\r\n]*(\r?\n|$)', ''
+                [System.IO.File]::WriteAllText($path, $content, [System.Text.UTF8Encoding]::new($false))
+
           - name: Get MSBuild
             uses: microsoft/setup-msbuild@v3
 

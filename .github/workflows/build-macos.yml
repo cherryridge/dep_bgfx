@@ -50,14 +50,14 @@ jobs:
                 cd bgfx
                 ../bx/tools/bin/darwin/genie --with-tools --platform=x64 --xcode=osx xcode11
                 cd .build/projects/xcode11
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=x86_64
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=x86_64
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=x86_64
-                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Debug ARCHS=x86_64
-                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=x86_64
+                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO
 
           - name: Compress Product x64
             shell: bash
@@ -81,14 +81,14 @@ jobs:
                 cd bgfx
                 ../bx/tools/bin/darwin/genie --with-tools --platform=ARM64 --xcode=osx xcode11
                 cd .build/projects/xcode11
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=arm64
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCS=arm64
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=arm64
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=arm64
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=arm64
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=arm64
-                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Debug ARCHS=arm64
-                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=arm64
+                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO
+                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO
 
           - name: Compress Product arm64
             shell: bash
