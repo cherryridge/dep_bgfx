@@ -148,3 +148,12 @@ jobs:
                 commit: ${{needs.update-commit.outputs.updated_commit}}
                 tag: ${{needs.check.outputs.tag}}
                 body: Build for commit ${{needs.check.outputs.latest_commit}}.
+
+    keepalive:
+        if: github.event_name == 'schedule'
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        permissions:
+            contents: write
+        steps:
+          - uses: cherryridge/keep-alive@main
