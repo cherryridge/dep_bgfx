@@ -18,7 +18,7 @@ on:
 
 jobs:
     build:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-26.04
         steps:
 
           - name: Checkout BGFX
@@ -47,18 +47,17 @@ jobs:
           - name: Install Dependencies
             shell: bash
             run: |
-                sudo apt update
-                sudo apt install clang llvm libgl-dev
+                . /etc/os-release
                 sudo dpkg --add-architecture arm64
                 sudo sed -ri '/^Components:/a Architectures: amd64' "/etc/apt/sources.list.d/ubuntu.sources"
-                sudo tee /etc/apt/sources.list.d/ubuntu-ports.list >/dev/null <<'EOF'
-                    deb [arch=arm64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] http://ports.ubuntu.com/ubuntu-ports noble main universe restricted multiverse
-                    deb [arch=arm64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] http://ports.ubuntu.com/ubuntu-ports noble-updates main universe restricted multiverse
-                    deb [arch=arm64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] http://ports.ubuntu.com/ubuntu-ports noble-backports main universe restricted multiverse
-                    deb [arch=arm64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] http://ports.ubuntu.com/ubuntu-ports noble-security main universe restricted multiverse
+                sudo tee /etc/apt/sources.list.d/ubuntu-ports.list >/dev/null <<EOF
+                    deb [arch=arm64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] http://ports.ubuntu.com/ubuntu-ports ${VERSION_CODENAME} main universe restricted multiverse
+                    deb [arch=arm64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] http://ports.ubuntu.com/ubuntu-ports ${VERSION_CODENAME}-updates main universe restricted multiverse
+                    deb [arch=arm64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] http://ports.ubuntu.com/ubuntu-ports ${VERSION_CODENAME}-backports main universe restricted multiverse
+                    deb [arch=arm64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] http://ports.ubuntu.com/ubuntu-ports ${VERSION_CODENAME}-security main universe restricted multiverse
                 EOF
-                sudo apt update
-                sudo apt install g++-aarch64-linux-gnu libgl-dev:arm64
+                sudo apt-get update
+                sudo apt-get install -y clang llvm g++-aarch64-linux-gnu libgl-dev:amd64 libgl-dev:arm64
 
           - name: Build Linux x64
             shell: bash
