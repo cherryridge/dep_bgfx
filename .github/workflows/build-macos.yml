@@ -44,22 +44,43 @@ jobs:
             run: |
                 echo ${{inputs.commit-sha}} >> VERSION.txt
 
+          - name: Configure isolated Xcode projects
+            shell: bash
+            run: |
+                python3 - <<'PY'
+                from pathlib import Path
+
+                path = Path("bgfx/scripts/genie.lua")
+                source = path.read_text()
+                replacements = {
+                    'configurations {\n\t\t"Debug",\n\t\t"Release",\n\t}':
+                        'configurations { assert(os.getenv("BGFX_BUILD_CONFIGURATION")) }',
+                    'local BGFX_BUILD_DIR = path.join(BGFX_DIR, ".build")':
+                        'local BGFX_BUILD_DIR = assert(os.getenv("BGFX_BUILD_DIR"))',
+                }
+                for old, new in replacements.items():
+                    if source.count(old) != 1:
+                        raise SystemExit("Unexpected BGFX generator layout: " + old)
+                    source = source.replace(old, new)
+                path.write_text(source)
+                PY
+
           - name: Build MacOS x64
             shell: bash
             run: |
                 cd bgfx
-                ../bx/tools/bin/darwin/genie --with-tools --platform=x64 --xcode=osx xcode11
-                cd .build/projects/xcode11
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                # GENie fixes library references to its first configuration (Debug).
-                sed -i '' 's/Debug\.a/Release.a/g' *.xcodeproj/project.pbxproj
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                for configuration in Debug Release; do
+                    BGFX_BUILD_CONFIGURATION="$configuration" \
+                    BGFX_BUILD_DIR="$PWD/.build/macos-x64/$configuration" \
+                        ../bx/tools/bin/darwin/genie --with-tools --platform=x64 --xcode=osx xcode11
+                    (
+                        cd ".build/macos-x64/$configuration/projects/xcode11"
+                        xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration "$configuration" ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                        xcodebuild -project bx.xcodeproj -scheme bx -configuration "$configuration" ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                        xcodebuild -project bimg.xcodeproj -scheme bimg -configuration "$configuration" ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                        xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc $configuration" -configuration "$configuration" ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                    )
+                done
 
           - name: Compress Product x64
             shell: bash
@@ -70,29 +91,29 @@ jobs:
                 cp -a bx/include/* temp/include
                 cp -a bimg/include/* temp/include
                 mkdir -p temp/bin
-                cp bgfx/.build/projects/xcode11/shadercRelease temp/bin/shaderc
+                cp bgfx/.build/macos-x64/Release/projects/xcode11/shadercRelease temp/bin/shaderc
                 mkdir -p temp/windows
                 cp bgfx/tools/bin/windows/d3d4linux.exe temp/windows/d3d4linux.exe
                 cp bgfx/tools/bin/windows/d3dcompiler_47.dll temp/windows/d3dcompiler_47.dll
-                7z a bgfx_macos_x64_debug.7z ./bgfx/.build/projects/xcode11/libbgfxDebug.a ./bgfx/.build/projects/xcode11/libbxDebug.a ./bgfx/.build/projects/xcode11/libbimgDebug.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
-                7z a bgfx_macos_x64_release.7z ./bgfx/.build/projects/xcode11/libbgfxRelease.a ./bgfx/.build/projects/xcode11/libbxRelease.a ./bgfx/.build/projects/xcode11/libbimgRelease.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
+                7z a bgfx_macos_x64_debug.7z ./bgfx/.build/macos-x64/Debug/projects/xcode11/libbgfxDebug.a ./bgfx/.build/macos-x64/Debug/projects/xcode11/libbxDebug.a ./bgfx/.build/macos-x64/Debug/projects/xcode11/libbimgDebug.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
+                7z a bgfx_macos_x64_release.7z ./bgfx/.build/macos-x64/Release/projects/xcode11/libbgfxRelease.a ./bgfx/.build/macos-x64/Release/projects/xcode11/libbxRelease.a ./bgfx/.build/macos-x64/Release/projects/xcode11/libbimgRelease.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
 
           - name: Build MacOS arm64
             shell: bash
             run: |
                 cd bgfx
-                ../bx/tools/bin/darwin/genie --with-tools --platform=ARM64 --xcode=osx xcode11
-                cd .build/projects/xcode11
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                # GENie fixes library references to its first configuration (Debug).
-                sed -i '' 's/Debug\.a/Release.a/g' *.xcodeproj/project.pbxproj
-                xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                for configuration in Debug Release; do
+                    BGFX_BUILD_CONFIGURATION="$configuration" \
+                    BGFX_BUILD_DIR="$PWD/.build/macos-arm64/$configuration" \
+                        ../bx/tools/bin/darwin/genie --with-tools --platform=ARM64 --xcode=osx xcode11
+                    (
+                        cd ".build/macos-arm64/$configuration/projects/xcode11"
+                        xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration "$configuration" ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                        xcodebuild -project bx.xcodeproj -scheme bx -configuration "$configuration" ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                        xcodebuild -project bimg.xcodeproj -scheme bimg -configuration "$configuration" ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                        xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc $configuration" -configuration "$configuration" ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                    )
+                done
 
           - name: Compress Product arm64
             shell: bash
@@ -103,12 +124,12 @@ jobs:
                 cp -a bx/include/* temp/include
                 cp -a bimg/include/* temp/include
                 mkdir -p temp/bin
-                cp bgfx/.build/projects/xcode11/shadercRelease temp/bin/shaderc
+                cp bgfx/.build/macos-arm64/Release/projects/xcode11/shadercRelease temp/bin/shaderc
                 mkdir -p temp/windows
                 cp bgfx/tools/bin/windows/d3d4linux.exe temp/windows/d3d4linux.exe
                 cp bgfx/tools/bin/windows/d3dcompiler_47.dll temp/windows/d3dcompiler_47.dll
-                7z a bgfx_macos_arm64_debug.7z ./bgfx/.build/projects/xcode11/libbgfxDebug.a ./bgfx/.build/projects/xcode11/libbxDebug.a ./bgfx/.build/projects/xcode11/libbimgDebug.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
-                7z a bgfx_macos_arm64_release.7z ./bgfx/.build/projects/xcode11/libbgfxRelease.a ./bgfx/.build/projects/xcode11/libbxRelease.a ./bgfx/.build/projects/xcode11/libbimgRelease.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
+                7z a bgfx_macos_arm64_debug.7z ./bgfx/.build/macos-arm64/Debug/projects/xcode11/libbgfxDebug.a ./bgfx/.build/macos-arm64/Debug/projects/xcode11/libbxDebug.a ./bgfx/.build/macos-arm64/Debug/projects/xcode11/libbimgDebug.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
+                7z a bgfx_macos_arm64_release.7z ./bgfx/.build/macos-arm64/Release/projects/xcode11/libbgfxRelease.a ./bgfx/.build/macos-arm64/Release/projects/xcode11/libbxRelease.a ./bgfx/.build/macos-arm64/Release/projects/xcode11/libbimgRelease.a ./temp/include ./temp/bin ./temp/windows VERSION.txt
 
           - name: Upload Archive
             uses: actions/upload-artifact@v7
