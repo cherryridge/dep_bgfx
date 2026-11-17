@@ -30,11 +30,17 @@ jobs:
 
           - name: Determine Should Update
             id: should_update
+            env:
+                GH_TOKEN: ${{github.token}}
             run: |
                 current_commit="${{steps.current_commit.outputs.content}}"
                 current_commit="${current_commit%"${current_commit##*[![:space:]]}"}"
 
-                latest_commit=$(curl -s "https://api.github.com/repos/bkaradzic/bgfx/commits/master" | jq -r '.sha')
+                latest_commit=$(gh api repos/bkaradzic/bgfx/commits/master --jq '.sha')
+                if [[ ! "$latest_commit" =~ ^[0-9a-f]{40}$ ]]; then
+                    echo "::error::GitHub returned an invalid BGFX commit SHA: $latest_commit"
+                    exit 1
+                fi
                 echo "latest_commit=$latest_commit" >> $GITHUB_OUTPUT
                 
                 echo "Built commit: $current_commit"
