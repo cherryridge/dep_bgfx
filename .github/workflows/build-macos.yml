@@ -53,10 +53,12 @@ jobs:
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                # GENie fixes library references to its first configuration (Debug).
+                sed -i '' 's/Debug\.a/Release.a/g' *.xcodeproj/project.pbxproj
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Debug ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
                 xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=x86_64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
 
           - name: Compress Product x64
@@ -84,10 +86,12 @@ jobs:
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
+                # GENie fixes library references to its first configuration (Debug).
+                sed -i '' 's/Debug\.a/Release.a/g' *.xcodeproj/project.pbxproj
                 xcodebuild -project bgfx.xcodeproj -scheme bgfx -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
                 xcodebuild -project bx.xcodeproj -scheme bx -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
                 xcodebuild -project bimg.xcodeproj -scheme bimg -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
-                xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Debug" -configuration Debug ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
                 xcodebuild -workspace bgfx.xcworkspace -scheme "shaderc Release" -configuration Release ARCHS=arm64 CLANG_WARN_UNREACHABLE_CODE=NO CLANG_WARN_COMMA=NO
 
           - name: Compress Product arm64
